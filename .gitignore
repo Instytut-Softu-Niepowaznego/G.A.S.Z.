@@ -1,0 +1,8 @@
+# Dane rastrowe trzymane poza repo (../data)
+*.tif
+*.tiff
+*.aux.xml
+
+# Pliki tymczasowe QGIS
+*.qgs~
+*.qgz~
