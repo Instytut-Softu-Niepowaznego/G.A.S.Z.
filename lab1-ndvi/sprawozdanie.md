@@ -157,7 +157,7 @@ Po uruchomieniu obliczeń utworzono nową warstwę rastrową, która przedstawia
 
 ### 4.3. Wizualizacja wyników NDVI
 
-Aby wynik obliczeń był czytelny i łatwiejszy do interpretacji, zmieniono sposób prezentacji warstwy NDVI. W właściwościach warstwy wybrano opcję: **Symbology > Singleband pseudocolor** [3].
+Aby wynik obliczeń był czytelny i łatwiejszy do interpretacji, zmieniono sposób prezentacji warstwy NDVI. We właściwościach warstwy wybrano opcję: **Symbology > Singleband pseudocolor** [3].
 
 Dzięki tej metodzie poszczególnym zakresom wartości NDVI przypisano różne kolory, przyjmując zakres od -0,65 do 0,8. Pozwoliło to wyróżnić obszary o wysokiej, średniej i niskiej intensywności roślinności.
 
@@ -184,7 +184,7 @@ Wykorzystano dane Sentinel-2 na poziomie przetworzenia L2A z dnia 28.10.2026 r.,
 - B08 – bliska podczerwień (NIR, ok. 842 nm),
 - B04 – czerwień (RED, ok. 665 nm).
 
-Pobrany obszar obejmuje około 7,4 × 6,8 km, a więc całe miasto Opole wraz z otaczającymi je terenami rolniczymi i leśnymi. Do orientacji przestrzennej ponownie posłużyła mapa podkładowa.
+Pobrany obszar obejmuje około 7,4 × 6,8 km (ok. 50 km²), a więc część miasta Opola wraz z otaczającymi ją terenami rolniczymi i leśnymi. Do orientacji przestrzennej ponownie posłużyła mapa podkładowa.
 
 ![Rys. 7. Mapa podkładowa analizowanego obszaru w QGIS](images/rys7.png)
 
@@ -222,7 +222,7 @@ Na tej podstawie dla symboliki **Singleband pseudocolor** przyjęto zakres warto
 
 *Rys. 12. Ustawienia symboliki warstwy NDVI dla danych Sentinel-2*
 
-Na mapie wynikowej najniższe wartości (kolor czerwony) przyjmują Odra i zbiorniki wodne. Zabudowa centrum miasta oraz terenów przemysłowych ma barwy pomarańczowe, a najwyższe wartości (kolor niebieski) występują na terenach leśnych i części pól uprawnych.
+Na mapie wynikowej najniższe wartości (kolor czerwony) przyjmują Odra i zbiorniki wodne. Zabudowa centrum miasta oraz terenów przemysłowych ma barwy pomarańczowe, a najwyższe wartości (kolor niebieski) występują na terenach leśnych i na części pól uprawnych.
 
 ![Rys. 13. Wynikowa mapa NDVI dla danych Sentinel-2](images/rys13.png)
 
@@ -232,7 +232,7 @@ Na mapie wynikowej najniższe wartości (kolor czerwony) przyjmują Odra i zbior
 
 Analiza końcowej mapy NDVI wykazała wyraźne zróżnicowanie pokrycia terenu na badanym obszarze. Najwyższe wartości indeksu występowały w miejscach porośniętych roślinnością, takich jak tereny zielone, zadrzewienia, łąki lub inne powierzchnie biologicznie czynne. Tego rodzaju obszary charakteryzują się dużą aktywnością wegetacyjną i dobrą kondycją roślin.
 
-Niższe wartości NDVI obserwowano natomiast na terenach zabudowanych, drogach, placach oraz w miejscach, gdzie roślinność była ograniczona lub nie występowała wcale. W przypadku powierzchni odkrytych, np. gleby lub nawierzchni sztucznych, wskaźnik przyjmował niższe wartości, co jest zgodne z interpretacją teledetekcyjną.
+Niższe wartości NDVI obserwowano natomiast na terenach zabudowanych, drogach, placach oraz w miejscach, gdzie roślinność była ograniczona lub nie występowała wcale. W przypadku powierzchni odkrytych, takich jak gleby lub nawierzchnie sztuczne, wskaźnik przyjmował niższe wartości, co jest zgodne z interpretacją teledetekcyjną.
 
 Porównanie mapy NDVI z obrazem CIR pozwoliło potwierdzić poprawność interpretacji. Na obu wizualizacjach obszary porośnięte roślinnością były łatwe do identyfikacji, choć każda z metod prezentowała je w inny sposób. Obraz CIR umożliwiał szybką ocenę wizualną, natomiast NDVI dostarczał bardziej precyzyjnej, ilościowej informacji o stanie roślinności.
 
@@ -247,9 +247,10 @@ Oba zestawy danych pozwalają obliczyć NDVI tym samym wzorem, jednak różnią 
 | Rodzaj danych | ortofotomapa lotnicza | zobrazowanie satelitarne |
 | Postać danych | jeden plik z 3 kanałami (NIR, RED, GREEN) | osobne pliki dla każdego pasma, misja rejestruje łącznie 13 pasm [5] |
 | Głębia bitowa | 8 bitów (0–255) | 16 bitów |
-| Rozmiar piksela | 0,25 m | 10 m (rozdzielczość natywna pasm) |
+| Rozmiar piksela | 0,25 m | 10 m (rozdzielczość natywna pasm), w pobranym rastrze ok. 6,3 × 10 m (0,00009°) |
 | Analizowany obszar | ok. 2,2 × 2,3 km | ok. 7,4 × 6,8 km |
-| Liczba pikseli warstwy NDVI | ok. 84,2 mln | ok. 0,8 mln |
+| Liczba pikseli całej warstwy NDVI | 84 198 852 (8964 × 9393) | 797 544 (1166 × 684) |
+| Liczba pikseli na wspólnym obszarze (zasięg CIR) | 84 198 852 | 85 204 |
 | Wartości | po obróbce tonalnej, bez kalibracji do odbicia | odbicie od powierzchni terenu po korekcji atmosferycznej [5] |
 
 Średnie wartości kanałów pokazują istotną różnicę. W użytym arkuszu CIR kanały NIR i RED mają niemal identyczną średnią (ok. 112 i 113), natomiast w danych Sentinel-2 średnia pasma B08 jest około trzykrotnie wyższa niż pasma B04 (ok. 13 300 i 4 500).
@@ -272,7 +273,9 @@ Histogram danych Sentinel-2 (Rys. 11) zaczyna się natomiast praktycznie od 0. P
 | Percentyl 95 | 0,496 | 0,760 | 0,828 |
 | Udział pikseli < 0 | 60,8% | 1,6% | 1,4% |
 
-Na wspólnym obszarze wartości NDVI z Sentinel-2 są średnio o około 0,46 wyższe niż z CIR, po sprowadzeniu obu warstw do tej samej siatki pikseli. Przesunięcie nie wynika więc z różnicy obszarów. Sprawdzono również, że warstwa NDVI z CIR została policzona poprawnie, czyli z kanałów 1 (NIR) i 2 (RED).
+Na wspólnym obszarze wartości NDVI z Sentinel-2 są średnio o około 0,46 wyższe niż z CIR. Przesunięcie nie wynika więc z różnicy obszarów. Sprawdzono również na próbce 1000 × 1000 pikseli, że warstwa NDVI z CIR została policzona poprawnie, czyli z kanałów 1 (NIR) i 2 (RED).
+
+NDVI obliczono osobno dla każdego źródła, a pasm B08 i B04 ani kanałów CIR nie przepróbkowywano po pobraniu. Statystyki w tabeli policzono na oryginalnych pikselach: kolumna CIR obejmuje całą warstwę, a kolumna wspólnego obszaru to warstwa Sentinel-2 wycięta do zasięgu CIR. Dopiero do wyznaczenia średniej różnicy i korelacji gotową warstwę NDVI z CIR przepróbkowano z układu EPSG:2180 do siatki Sentinel-2 (EPSG:4326), uśredniając wartości pikseli (metoda `average` w bibliotece rasterio). Porównanie objęło 83 315 pikseli.
 
 Najbardziej prawdopodobną przyczyną jest sposób przygotowania ortofotomapy. Jej kanały są skalowane do 8 bitów i wyrównywane tonalnie pod kątem odbioru wizualnego, przez co relacja NIR do RED nie odpowiada fizycznemu odbiciu. W efekcie zabudowa i drogi, dla których w danych Sentinel-2 NDVI jest dodatnie, w CIR przyjmują wartości ujemne. Część różnicy może też wynikać z innego terminu wykonania zdjęć, ponieważ dane Sentinel-2 pochodzą z końca października.
 
@@ -282,7 +285,7 @@ Współczynnik korelacji między obiema warstwami na wspólnym obszarze wynosi o
 
 **Dane Sentinel-2** dostarczają więcej informacji w sensie radiometrycznym i spektralnym: mają większą głębię bitową, dostęp do kolejnych pasm i wartości odbicia po korekcji atmosferycznej. Obejmują też większy obszar, a wartości NDVI mają zakres zgodny z interpretacją teledetekcyjną. Lepiej nadają się zatem do analiz ilościowych.
 
-**Dane CIR z Geoportalu** są natomiast lepsze do wizualizacji. Piksel 0,25 m pozwala rozróżnić pojedyncze budynki, drogi i drzewa (Rys. 6), które na mapie Sentinel-2 o pikselu 10 m (Rys. 13) zlewają się w jednolite plamy. Na tym samym obszarze warstwa CIR zawiera około 1000 razy więcej pikseli.
+**Dane CIR z Geoportalu** są natomiast lepsze do wizualizacji. Piksel 0,25 m pozwala rozróżnić pojedyncze budynki, drogi i drzewa (Rys. 6), które na mapie Sentinel-2 o natywnej rozdzielczości 10 m (Rys. 13) zlewają się w jednolite plamy. Na tym samym obszarze warstwa CIR zawiera około 1000 razy więcej pikseli (84,2 mln wobec ok. 85 tys.).
 
 ## 8. Wnioski końcowe
 
@@ -298,6 +301,6 @@ Porównanie z danymi Sentinel-2 wykazało, że wynik NDVI silnie zależy od źr�
 
 1. NASA Earthdata – NDVI, dokumentacja online: <https://www.earthdata.nasa.gov/topics/land-surface/normalized-difference-vegetation-index-ndvi>, dostęp: 20.10.2026.
 2. Geoportal, Główny Urząd Geodezji i Kartografii, dokumentacja online: <https://mapy.geoportal.gov.pl/imapnext/pomoc/>, dostęp: 19.10.2026.
-3. Documentacja QGIS 3.44, QGIS project, dokumentacja online: <https://docs.qgis.org/3.44/pl/docs/>, dostęp: 20.10.2026.
+3. Dokumentacja QGIS 3.44, QGIS project, dokumentacja online: <https://docs.qgis.org/3.44/pl/docs/>, dostęp: 20.10.2026.
 4. Copernicus Browser, Copernicus Data Space Ecosystem, serwis online: <https://browser.dataspace.copernicus.eu/>, dostęp: 01.11.2026.
 5. Sentinel-2, Copernicus Data Space Ecosystem, dokumentacja online: <https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html>, dostęp: 01.11.2026.
