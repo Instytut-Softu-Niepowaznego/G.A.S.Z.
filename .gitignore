@@ -6,3 +6,8 @@
 # Pliki tymczasowe QGIS
 *.qgs~
 *.qgz~
+
+# Python
+__pycache__/
+*.pyc
+.venv/
