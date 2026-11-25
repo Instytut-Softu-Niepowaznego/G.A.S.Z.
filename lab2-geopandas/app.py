@@ -8,6 +8,8 @@ from pathlib import Path
 from streamlit_folium import st_folium
 from pyproj import Geod
 import matplotlib.pyplot as plt
+import rasterio
+import numpy as np
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "lab2-geopandas"
 

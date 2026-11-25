@@ -1,0 +1,58 @@
+"""*************************B*************************"""
+
+red_src = rasterio.open(DATA_DIR / "S2_L2A_2026-10-06_B04.tiff")
+nir_src = rasterio.open(DATA_DIR / "S2_L2A_2026-10-06_B08.tiff")
+
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+
+same_grid = (red_src.crs == nir_src.crs
+             and red_src.transform == nir_src.transform
+             and red_src.shape == nir_src.shape)
+
+# target grid: the red band's grid, in a metric CRS
+dst_crs = "EPSG:2180"
+dst_transform, width, height = calculate_default_transform(
+    red_src.crs, dst_crs, red_src.width, red_src.height, *red_src.bounds,
+    resolution=10)                   # Sentinel-2 B04/B08 are natively 10 m
+
+def warp(src):                       # put any band onto the target grid
+    out = np.full((height, width), np.nan, dtype="float32")
+    reproject(source=rasterio.band(src, 1), destination=out,
+              dst_transform=dst_transform, dst_crs=dst_crs,
+              dst_nodata=np.nan, resampling=Resampling.bilinear)
+    return np.ma.masked_invalid(out)
+
+red, nir = warp(red_src), warp(nir_src)
+
+with np.errstate(divide="ignore", invalid="ignore"):    # 0 / 0 where both bands are 0
+    ndvi = (nir - red) / (nir + red)
+ndvi = np.ma.masked_invalid(ndvi)
+
+classes = np.digitize(ndvi.filled(np.nan), bins=[0.0, 0.2, 0.5])   # 0, 1, 2, 3
+classes = np.ma.masked_where(ndvi.mask, classes)
+
+pixel_area_m2 = abs(transform.a * transform.e)                   # 100 m²
+area_ha = np.bincount(classes.compressed(), minlength=4) * pixel_area_m2 / 10_000
+
+import rasterio.mask
+
+with rasterio.open("ndvi.tif") as src:
+    zones = gpd.read_file("opole/opole_districts.geojson").to_crs(src.crs)   # same CRS as the raster!
+    pixel_area = abs(src.transform.a * src.transform.e)
+    for i, zone in zones.iterrows():
+        clipped, _ = rasterio.mask.mask(src, [zone.geometry], crop=True, nodata=np.nan)
+        values = clipped[np.isfinite(clipped)]
+        zones.loc[i, "coverage"] = values.size * pixel_area / zone.geometry.area   # part of the zone inside the scene
+        zones.loc[i, "ndvi_mean"] = values.mean()
+
+with rasterio.open("S2_B04.tiff") as src:
+    profile = src.profile                     # start from the input's profile…
+
+profile.update(                               # …and describe the grid we computed NDVI on
+    crs=dst_crs, transform=dst_transform, width=width, height=height,
+    dtype="float32", count=1, nodata=np.nan, compress="deflate",
+)
+
+with rasterio.open("ndvi.tif", "w", **profile) as dst:
+    dst.write(ndvi.filled(np.nan).astype("float32"), 1)
+    dst.set_band_description(1, "NDVI")
